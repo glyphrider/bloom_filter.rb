@@ -1,7 +1,7 @@
 pipeline {
   agent { label 'docker-enabled' }
   environment {
-    UNIQUE_ID="$$"
+    UNIQUE_ID="$(uuidgen)"
   }
 
   stages {
