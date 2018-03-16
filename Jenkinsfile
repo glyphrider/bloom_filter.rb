@@ -9,17 +9,12 @@ pipeline {
     }
     stage('Bundle') {
       steps {
-        sh 'docker run --rm -v /etc/passwd:/etc/passwd -v /etc/group:/etc/group --user $(id -u):$(id -g) -v bloom_filter_${BUILD_NUMBER}:/usr/local/bundle --volumes-from=$(hostname) -w "${WORKSPACE}" -e HOME="${WORKSPACE}" library/ruby:2.3.6 bundle install'
+        sh 'docker run --rm -v /etc/passwd:/etc/passwd -v /etc/group:/etc/group --user $(id -u):$(id -g) -v bloom_filter_bundle:/usr/local/bundle --volumes-from=$(hostname) -w "${WORKSPACE}" -e HOME="${WORKSPACE}" library/ruby:2.3.6 bundle install'
       }
     }
     stage('Test') {
       steps {
-        sh 'docker run --rm -v /etc/passwd:/etc/passwd -v /etc/group:/etc/group --user $(id -u):$(id -g) -v bloom_filter_${BUILD_NUMBER}:/usr/local/bundle --volumes-from=$(hostname) -w "${WORKSPACE}" -e HOME="${WORKSPACE}" library/ruby:2.3.6 bundle exec rake'
-      }
-    }
-    stage('Cleanup') {
-      steps {
-        sh 'docker volume rm bloom_filter_${BUILD_NUMBER}'
+        sh 'docker run --rm -v /etc/passwd:/etc/passwd -v /etc/group:/etc/group --user $(id -u):$(id -g) -v bloom_filter_bundle:/usr/local/bundle --volumes-from=$(hostname) -w "${WORKSPACE}" -e HOME="${WORKSPACE}" library/ruby:2.3.6 bundle exec rake'
       }
     }
   }
